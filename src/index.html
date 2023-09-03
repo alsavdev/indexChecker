@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bot-Index 0.1</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+</head>
+
+<body class="card-all">
+    <div style="background-color: #ffff;" class="sticky-top py-2 align-items-center mb-4 app">
+        <h4 class=" fw-bold mt-2 text-center">Bot Index 1.0</h4>
+    </div>
+    <div class="container px-4 mb-5">
+        <div class="">
+            <div class="row">
+                <div class="col-lg-6 col-md-12">
+
+                    <div class="mb-3" id="myForm">
+                        <label for="fileGroup" class="text-white form-label fw-medium" required>Input File</label>
+                        <input class="form-control form" type="file" id="fileGroup"
+                            accept=".txt,.xlsx,.xlsm,.xlsb,.xltx,.csv">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="apikey" class="text-white form-label fw-medium">2captcha API-KEY</label>
+                        <input type="text" class="form-control" id="apikey"
+                            placeholder="Your api-key 2captcha here....">
+                    </div>
+
+                    <button type="button" id="Start" class="btn-start mb-2">Start</button>
+                    <button type="button" id="export" class="btn-import hidden mb-2">Export</button>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="headlesst">
+                            <label class="form-check-label text-white" for="headlesst">Show Log</label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="disable">
+                            <label class="form-check-label text-white" for="headlesst">Visible Mode</label>
+                        </div>
+                        <div>
+
+                        </div>
+                        <div>
+                            <i role="button" class="fas fa-sync" id="refreshButton" style="color: white;"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-1 col-lg-6 col-md-12 mb-3">
+                    <div id="scrl" class="table-container table-responsive" style="max-height: 250px;">
+                        <table class="table table-bordered" id="data-table">
+                            <thead>
+                                <tr class="table-dark">
+                                    <th class="text-center" scope="col">URL</th>
+                                    <th class="text-center" scope="col">Index</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="mb-4 hidden" id="logTextArea">
+                        <label for="log" class="text-white form-label fw-medium">Log Proccess</label>
+                        <textarea class="user-select-none form-control user-select-none" id="log" rows="10"
+                            readonly></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <script src="../node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
+    <script src="../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="preload.js"></script>
+    <script src="https://kit.fontawesome.com/03734f8551.js" crossorigin="anonymous"></script>
+</body>
+
+</html>

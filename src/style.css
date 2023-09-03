@@ -1,0 +1,73 @@
+* {
+    -webkit-user-select: none;
+    cursor: default;
+}
+
+body::-webkit-scrollbar {
+    display: none;
+}
+/* 
+.table-responsive::-webkit-scrollbar {
+    display: none;
+} */
+
+#body {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+
+.btn-start {
+    background-color: #0f0129;
+    color: #ffff;
+    font-weight: 500;
+    border: none;
+    outline: none;  
+    width: 100%;
+    padding: 10px 0;
+    height: auto;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.btn-import {
+    background-color: black;
+    color: #ffff;
+    font-weight: 500;
+    border: none;
+    outline: none;
+    width: 100%;
+    padding: 10px 0;
+    height: auto;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+
+.icon {
+    height: 80px;
+    width: 80px;
+}
+
+.picture {
+    height: auto;
+    width: 100%;
+}
+
+.card-all {
+    border-radius: 20px;
+    background-color: #3c4474;
+    /* background-image: url('6055148_57673-removebg-preview.png'); */
+    background-repeat: no-repeat;
+    background-blend-mode: overlay;
+    background-position: center;
+    /* overflow: hidden; */
+}
+  
+.hidden {
+    display: none;
+}
+
+.app {
+    -webkit-app-region: drag;
+  }
