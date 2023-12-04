@@ -30,7 +30,7 @@ function createWindow() {
         }
     });
     mainWindow.loadFile('src/index.html');
-    Menu.setApplicationMenu(null);
+    app.isPackaged && Menu.setApplicationMenu(null);
 }
 
 app.whenReady().then(createWindow);

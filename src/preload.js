@@ -8,7 +8,7 @@ const startButton = document.getElementById('Start');
 const ekspo = document.getElementById("export");
 const logTable = document.getElementById('data-table');
 const Api = document.getElementById('apikey')
-const inputFields = [elGroup , Api];
+const inputFields = [elGroup];
 const toggleBtn = document.getElementById('headlesst');
 const logContainer = document.getElementById('logTextArea');
 const headles = document.getElementById('disable')
@@ -22,7 +22,7 @@ startButton.addEventListener('click', () => {
     const fileGroup = elGroup.files[0]?.path;
     const visibleMode = headles.checked ? false : 'new'
     const apiKeyValue = Api.value;
-
+    initNumb = 0;
     ipcRenderer.send('start', fileGroup, visibleMode, apiKeyValue)
   }
 });
@@ -68,7 +68,9 @@ document.getElementById('export').addEventListener('click', function () {
   if (!wb['Sheets']['Sheet1']['!cols']) {
     wb['Sheets']['Sheet1']['!cols'] = [];
   }
-  
+  wb['Sheets']['Sheet1']['!cols'][0] = {
+    width: 5
+  };
   wb['Sheets']['Sheet1']['!cols'][0] = {
     width: 40
   };
@@ -86,13 +88,16 @@ document.getElementById('export').addEventListener('click', function () {
 
 let previousReportData = [];
 
+let initNumb = 0
+
 function logToTable(search, hasil) {
   if (search !== undefined && hasil !== undefined) {
     const isDuplicate = previousReportData.some(report => report.search === search && report.hasil === hasil);
 
     if (!isDuplicate) {
+      initNumb++;
       const newRow = logTable.insertRow();
-      const rowHtml = `<tr><td>${search}</td><td class="text-center">${hasil}</td></tr>`;
+      const rowHtml = `<tr><td>${initNumb}</td><td>${search}</td><td class="text-center">${hasil}</td></tr>`;
       newRow.innerHTML = rowHtml;
       document.getElementById('scrl').scrollTop = document.getElementById('scrl').scrollHeight;
 

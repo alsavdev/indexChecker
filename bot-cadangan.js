@@ -1,10 +1,9 @@
-const puppeteer = require('puppeteer-extra');
-const RecaptchaPlugin = require('puppeteer-extra-plugin-recaptcha');
-const pPlugin = require('puppeteer-extra-plugin-stealth');
-puppeteer.use(pPlugin());
-
-const fs = require('fs');
-const path = require('path');
+const puppeteer = require('puppeteer-extra')
+const RecaptchaPlugin = require('puppeteer-extra-plugin-recaptcha')
+const pPlugin = require('puppeteer-extra-plugin-stealth')
+puppeteer.use(pPlugin())
+const fs = require('fs')
+const path = require('path')
 
 const baseUrl = 'https://www.google.com/';
 const chrome = path.join(process.cwd(), "chrome/chrome.exe");
@@ -51,7 +50,6 @@ async function init(logToTextarea, logToTable, fileGroup, visibleMode, apiKeyVal
         try {
             await page.solveRecaptchas();
             const captchas = await page.$('[title="reCAPTCHA"]')
-
             if (captchas) {
                 logToTextarea("captcha detected")
                 page.url().includes('sory/index')
@@ -67,7 +65,7 @@ async function init(logToTextarea, logToTable, fileGroup, visibleMode, apiKeyVal
                 waitUntil: ['domcontentloaded', "networkidle2"],
                 timeout: 120000
             })
-
+            
             await page.solveRecaptchas();
             await page.sleep(2000)
 
@@ -78,6 +76,7 @@ async function init(logToTextarea, logToTable, fileGroup, visibleMode, apiKeyVal
                 logToTextarea("Done")
                 await page.sleep(5000)
             }
+
 
             try {
                 await page.waitForSelector('#result-stats', {
