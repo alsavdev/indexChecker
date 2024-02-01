@@ -33,7 +33,7 @@
     "@electron-forge/maker-squirrel": "^6.3.0",
     "@electron-forge/maker-zip": "^6.3.0",
     "@electron-forge/plugin-auto-unpack-natives": "^6.3.0",
-    "electron": "25.4.0",
+    "electron": "^25.9.8",
     "electron-builder": "^24.6.3"
   },
   "build": {
@@ -51,9 +51,6 @@
       "perMachine": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true
-    },
-    "extraFiles": [
-      "chrome"
-    ]
+    }
   }
 }
