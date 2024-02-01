@@ -6,7 +6,8 @@ const {
     Menu
 } = require('electron');
 const {
-    init
+    init,
+    stopProccess
 } = require("./bot-index.js")
 const path = require('path');
 const fs = require('fs');
@@ -51,7 +52,7 @@ ipcMain.on('refreshWindow', () => {
     mainWindow.reload();
 });
 
-ipcMain.on('start', async (event, fileGroup, visibleMode, apiKeyValue) => {
+ipcMain.on('start', async (event, data) => {
     const logs = [];
     const reports = [];
 
@@ -71,13 +72,25 @@ ipcMain.on('start', async (event, fileGroup, visibleMode, apiKeyValue) => {
     try {
         logToTextarea("Start")
         event.sender.send("disabled")
-        await init(logToTextarea, logToTable, fileGroup, visibleMode, apiKeyValue).catch((err) => logToTextarea(err));
+        await init(logToTextarea, logToTable, data)
         logToTextarea("Done")
 
         event.sender.send("enabled")
     } catch (error) {
         logToTextarea(error)
     }
+});
+
+ipcMain.on('stop', (event) => {
+    const logs = [];
+
+    const logToTextarea = (msg) => {
+        logs.push(msg);
+        event.sender.send("log", logs.join("\n"));
+    };
+
+    stopProccess(logToTextarea);
+    event.sender.send("enabled");
 });
 
 ipcMain.on('save-excel-data', (event, data) => {

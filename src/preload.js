@@ -5,25 +5,69 @@ const XLSX = require('xlsx');
 const logTextarea = document.getElementById('log');
 const elGroup = document.getElementById('fileGroup');
 const startButton = document.getElementById('Start');
+const stopButton = document.getElementById('stop');
 const ekspo = document.getElementById("export");
 const logTable = document.getElementById('data-table');
 const Api = document.getElementById('apikey')
+const busterKey = document.getElementById('busterKey')
 const inputFields = [elGroup];
 const toggleBtn = document.getElementById('headlesst');
 const logContainer = document.getElementById('logTextArea');
 const headles = document.getElementById('disable')
+const buster = document.getElementById('buster')
+const captcha = document.getElementById('captcha')
+const cghost = document.getElementById('cghost')
+const country = document.getElementById('country')
+const countryLabel = document.getElementById('country_label')
 
 ekspo.addEventListener('click', () => {
   const data = []
 })
 
+buster.addEventListener('change', () => {
+  if (buster.checked) {
+    captcha.checked = false;
+    busterKey.classList.remove('d-none');
+    Api.classList.add('d-none')
+  } else {
+    busterKey.classList.add('d-none')
+  }
+})
+captcha.addEventListener('change', () => {
+  if (captcha.checked) {
+    buster.checked = false;
+    Api.classList.remove('d-none');
+    busterKey.classList.add('d-none')
+  } else {
+    Api.classList.add('d-none')
+  }
+})
+
+cghost.addEventListener('change', () => {
+  if (cghost.checked) {
+    country.classList.remove('d-none')
+    countryLabel.classList.remove('d-none')
+  } else {
+    country.classList.add('d-none')
+    countryLabel.classList.add('d-none')
+  }
+})
+
 startButton.addEventListener('click', () => {
   if (validateForm(inputFields)) {
-    const fileGroup = elGroup.files[0]?.path;
-    const visibleMode = headles.checked ? false : 'new'
-    const apiKeyValue = Api.value;
+    const data = {
+      fileGroup: elGroup.files[0]?.path,
+      visible: headles.checked ? false : 'new',
+      api2captcha: Api.value,
+      busterKey: busterKey.value,
+      buster: buster.checked,
+      captcha: captcha.checked,
+      cghost: cghost.checked,
+      country: country.files[0]?.path,
+    }
+
     initNumb = 0;
-    ipcRenderer.send('start', fileGroup, visibleMode, apiKeyValue)
+    ipcRenderer.send('start', data)
   }
 });
 
@@ -42,6 +86,13 @@ function validateForm(fields) {
   return isValid;
 }
 
+stopButton.addEventListener('click', () => {
+  if (confirm("Realy want to stop the proccess ?") == true) {
+      ipcRenderer.send('stop');
+      startButton.classList.remove('d-none')
+      stopButton.classList.add('d-none')
+  }
+})
 
 document.addEventListener('change', () => {
   if (toggleBtn.checked) {
@@ -55,7 +106,7 @@ document.addEventListener('change', () => {
 ipcRenderer.on('log', (event, logs) => {
   logTextarea.value = logs;
   logTextarea.scrollTop = logTextarea.scrollHeight;
-  
+
 });
 
 document.getElementById('refreshButton').addEventListener('click', () => {
@@ -77,7 +128,7 @@ document.getElementById('export').addEventListener('click', function () {
   wb['Sheets']['Sheet1']['!cols'][1] = {
     width: 12
   };
-  
+
   const data = XLSX.write(wb, {
     bookType: 'xlsx',
     type: 'array'
@@ -115,12 +166,14 @@ ipcRenderer.on('logToTable', (event, report) => {
 });
 
 
-const elDis = [elGroup, startButton, ekspo, Api]
+const elDis = [elGroup, startButton, ekspo, Api, buster, captcha, busterKey, cghost, country]
 
 ipcRenderer.on("disabled", () => {
   elDis.forEach((e) => {
     e.setAttribute('disabled', '')
     startButton.style.backgroundColor = '#808080'
+    startButton.classList.add('d-none')
+    stopButton.classList.remove('d-none')
   })
 })
 
@@ -129,5 +182,7 @@ ipcRenderer.on("enabled", () => {
     e.removeAttribute("disabled", '')
     startButton.style.backgroundColor = '#0f0129'
     ekspo.classList.remove("hidden")
+    startButton.classList.remove('d-none')
+    stopButton.classList.add('d-none')
   })
 })

@@ -19,20 +19,39 @@
                 <div class="col-lg-6 col-md-12">
 
                     <div class="mb-3" id="myForm">
-                        <label for="fileGroup" class="text-white form-label fw-medium" required>Input File</label>
+                        <label for="fileGroup" class="text-white form-label fw-medium">Input File</label>
                         <input class="form-control form" type="file" id="fileGroup"
                             accept=".txt,.xlsx,.xlsm,.xlsb,.xltx,.csv">
                     </div>
 
-                    <div class="mb-3">
-                        <label for="apikey" class="text-white form-label fw-medium">2captcha API-KEY</label>
-                        <input type="text" class="form-control" id="apikey"
-                            placeholder="Your api-key 2captcha here....">
+                    <h5 class="fs-6 fw-medium text-white mb-2">Captcha Service :</h5>
+                    <div class="d-flex gap-3 align-items-start mb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="captcha">
+                            <label class="form-check-label text-white" for="captcha">2Captcha</label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="buster">
+                            <label class="form-check-label text-white" for="buster">Buster</label>
+                        </div>
                     </div>
 
-                    <button type="button" id="Start" class="btn-start mb-2">Start</button>
-                    <button type="button" id="export" class="btn-import hidden mb-2">Export</button>
 
+                    <textarea class="form-control mb-3 d-none" id="apikey" rows="1"
+                        placeholder="apikey captcha < provider >"></textarea>
+                    <textarea class="form-control mb-3 d-none" id="busterKey" rows="1"
+                        placeholder="apikey wit.ai"></textarea>
+
+                    <h5 class="fs-6 fw-medium text-white mb-2">Vpn Service :</h5>
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" role="switch" id="cghost">
+                        <label class="form-check-label text-white" for="cghost">CyberGhost</label>
+                    </div>
+
+                    <label for="country" id="country_label" class="text-white d-none form-label fw-medium">Country File</label>
+                    <input class="form-control d-none form mb-3" type="file" id="country" accept=".txt">
+
+                    <h5 class="fs-6 fw-medium text-white mb-2">Options :</h5>
                     <div class="d-flex justify-content-between mb-3">
                         <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" role="switch" id="headlesst">
@@ -49,7 +68,12 @@
                             <i role="button" class="fas fa-sync" id="refreshButton" style="color: white;"></i>
                         </div>
                     </div>
+
+                    <button type="button" id="Start" class="btn-start mb-2">Start</button>
+                    <button type="button" id="stop" class="btn d-none btn-danger w-100 mb-2">Stop</button>
+                    <button type="button" id="export" class="btn-import hidden mb-2">Export</button>
                 </div>
+
 
                 <div class="mt-1 col-lg-6 col-md-12 mb-3">
                     <div id="scrl" class="table-container table-responsive" style="max-height: 250px;">
