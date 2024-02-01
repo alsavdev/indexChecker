@@ -1,5 +1,7 @@
 const puppeteer = require('puppeteer-extra');
-const { executablePath } = require('puppeteer')
+const {
+    executablePath
+} = require('puppeteer')
 const RecaptchaPlugin = require('puppeteer-extra-plugin-recaptcha');
 const pPlugin = require('puppeteer-extra-plugin-stealth');
 puppeteer.use(pPlugin());
@@ -71,7 +73,7 @@ async function init(logToTextarea, logToTable, data) {
             if (data.captcha) {
                 await page.solveRecaptchas();
                 const captchas = await page.$('[title="reCAPTCHA"]')
-    
+
                 if (captchas) {
                     logToTextarea("captcha detected")
                     page.url().includes('sory/index')
@@ -79,21 +81,40 @@ async function init(logToTextarea, logToTable, data) {
                 }
             }
 
-            await page.waitForSelector('[name="q"]')
-            const subject = await page.$('[name="q"]')
-            await subject.type('site:' + recepientName)
-            logToTextarea('Url : ' + recepientName);
-
-            await page.keyboard.press('Enter')
-            await page.waitForNavigation({
-                waitUntil: ['domcontentloaded', "networkidle2"],
+            const search = await page.waitForSelector('[name="q"]', {
                 timeout: 120000
             })
+
+            if (search) {
+                const accept = await page.$('#L2AGLb');
+                if (accept) {
+                    logToTextarea("Accept Found ✅");
+                    const bahasa = await page.$('#vc3jof');
+                    await bahasa.click();
+                    await page.waitForSelector('li[aria-label="‪English‬"]');
+                    await page.click('li[aria-label="‪English‬"]');
+                    logToTextarea('tes dsdsd')
+                    await page.sleep(6000)
+                    const aklans = await page.$('#L2AGLb');
+                    await aklans.click()
+                    await page.sleep(6000)
+                }
+
+                const subject = await page.$('[name="q"]')
+                await subject.type('site:' + recepientName)
+                logToTextarea('Url : ' + recepientName);
+
+                await page.keyboard.press('Enter')
+                await page.waitForNavigation({
+                    waitUntil: ['domcontentloaded', "networkidle2"],
+                    timeout: 120000
+                })
+            }
 
             if (data.captcha) {
                 await page.solveRecaptchas();
                 await page.sleep(2000)
-    
+
                 const captcha = await page.$('[title="reCAPTCHA"]')
                 if (captcha) {
                     logToTextarea("Captcha detected")
@@ -153,25 +174,25 @@ async function init(logToTextarea, logToTable, data) {
                     timeout: 120000
                 })
             }
-    
+
             if (id === '') {
                 const idExtension = await page.evaluateHandle(
                     'document.querySelector("body > extensions-manager").shadowRoot.querySelector("#items-list").shadowRoot.querySelectorAll("extensions-item")[0]'
                 );
                 await page.evaluate(e => e.style = "", idExtension)
-    
+
                 const id = await page.evaluate(e => e.getAttribute('id'), idExtension)
-    
+
                 await page.goto(`chrome-extension://${id}/src/options/index.html`, {
                     waitUntil: ['domcontentloaded', "networkidle2"],
                     timeout: 60000
                 })
-    
+
                 fs.writeFileSync(pathId, id)
             }
-    
+
             await page.sleep(3000)
-    
+
             await page.evaluate(() => {
                 document.querySelector("#app > div > div:nth-child(1) > div.option-wrap > div.option.select > div > div.v-input__control > div > div.v-field__field > div").click()
             })
@@ -179,17 +200,17 @@ async function init(logToTextarea, logToTable, data) {
             await page.evaluate(() => {
                 document.querySelector("body > div.v-overlay-container > div > div > div > div:nth-child(3)").click()
             })
-    
+
             const addApi = await page.$('#app > div > div:nth-child(1) > div.option-wrap > div.wit-add-api > button')
             addApi && await addApi.click()
-    
+
             const fieldApi = await page.waitForSelector('#input-18')
             fieldApi && await fieldApi.type(data.busterKey)
         } catch (error) {
             throw error;
         }
     }
-    
+
     const vpnCghost = async (data, log) => {
         try {
             const pathId = path.join(process.cwd(), 'src/data/idghost.txt');
@@ -205,63 +226,46 @@ async function init(logToTextarea, logToTable, data) {
                     timeout: 120000
                 })
             }
-    
+
             if (id === '') {
                 const idExtension = await page.evaluateHandle(
                     `document.querySelector("body > extensions-manager").shadowRoot.querySelector("#items-list").shadowRoot.querySelectorAll("extensions-item")[${data.buster ? 2 : 1}]`
                 );
                 await page.evaluate(e => e.style = "", idExtension)
-    
+
                 const id = await page.evaluate(e => e.getAttribute('id'), idExtension)
-    
+
                 await page.goto(`chrome-extension://${id}/index.html`, {
                     waitUntil: ['domcontentloaded', "networkidle2"],
                     timeout: 60000
                 })
-    
+
                 fs.writeFileSync(pathId, id)
             }
-    
+
             await page.sleep(3000)
-    
+
             const pickCountry = await page.waitForSelector('.selected-country')
             pickCountry && await pickCountry.click()
-    
+
             await page.sleep(3000)
-    
-            const regionFiles = fs.readFileSync(data.country, 'utf-8').split('\n')
-            let regionId = []
-    
-            regionFiles.forEach((data) => {
-                regionId.push(data)
-            })
-    
-            await page.evaluate((regionId) => {
-                let region;
-                if (regionId.length > 1) {
-                    region = regionId[Math.floor(Math.random() * regionId.length)]
-                } else {
-                    region = regionId.join('')
-                }
-    
-                const country = document.querySelectorAll('mat-option > .mat-option-text')
-                country.forEach((e) => {
-                    const reg = e.innerText
-                    reg.toLowerCase().includes(region) && e.click()
-                })
-            }, regionId)
-    
+
+            const regionFiles = fs.readFileSync(data.country, 'utf-8').split('\n').filter(line => line !== "")
+            
+            const country = await page.$$('mat-option > .mat-option-text')
+            await country[Math.floor(Math.random() * regionFiles.length)].click()
+
             await page.sleep(3000)
-    
+
             await page.evaluate(() => {
                 document.querySelector('body > app-root > main > app-home > div > div.spinner > app-switch > div').click()
             })
-    
+
             await page.sleep(5000)
         } catch (error) {
             throw error;
         }
-    }    
+    }
 
     async function solveCaptcha(logToTextarea) {
         return new Promise(async (resolve, reject) => {
@@ -282,15 +286,15 @@ async function init(logToTextarea, logToTable, data) {
                                         await page.sleep(3000)
                                         solverButton && await solverButton.click();
                                         await page.sleep(3000)
-    
+
                                         // if (solverButton && await page.url().includes('sorry/index')) {
                                         //     reject("error")
                                         // }
-                                        await page.waitForNavigation({
-                                            waitUntil: ['networkidle2', 'domcontentloaded'],
-                                            timeout: 120000
-                                        })
-                                        
+                                        // await page.waitForNavigation({
+                                        //     waitUntil: ['networkidle2', 'domcontentloaded'],
+                                        //     timeout: 120000
+                                        // })
+
                                         if (!solverButton && !(await page.url().includes('sorry/index'))) {
                                             logToTextarea("[INFO] Solved ✅");
                                             resolve();
@@ -316,17 +320,17 @@ async function init(logToTextarea, logToTable, data) {
                         reject(new Error('Iframe with title "captcha" not found on the page.'));
                     }
                 }
-    
+
             } catch (error) {
                 logToTextarea(error);
                 reject(error);
             }
         });
-    }    
+    }
 
     const workFlow = async () => {
         try {
-            const recipients = fs.readFileSync(fileGroup, 'utf-8').split('\n').filter(line => line !== "");
+            const recipients = fs.readFileSync(data.fileGroup, 'utf-8').split('\n').filter(line => line !== "");
 
             for (let i = 0; i < recipients.length; i++) {
 
@@ -343,7 +347,7 @@ async function init(logToTextarea, logToTable, data) {
                     logToTextarea(error);
                     continue
                 }
-                
+
                 logToTable(recipientName, hasil)
 
                 if (finish) {
