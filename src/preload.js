@@ -20,6 +20,8 @@ const cghost = document.getElementById('cghost')
 const country = document.getElementById('country')
 const countryLabel = document.getElementById('country_label')
 
+let previousReportData = [];
+
 ekspo.addEventListener('click', () => {
   const data = []
 })
@@ -66,6 +68,7 @@ startButton.addEventListener('click', () => {
       country: country.files[0]?.path,
     }
 
+    previousReportData = [];
     initNumb = 0;
     ipcRenderer.send('start', data)
   }
@@ -137,7 +140,7 @@ document.getElementById('export').addEventListener('click', function () {
   ipcRenderer.send('save-excel-data', data);
 });
 
-let previousReportData = [];
+
 
 let initNumb = 0
 
@@ -164,7 +167,6 @@ ipcRenderer.on('logToTable', (event, report) => {
     logToTable(log.search, log.hasil);
   }
 });
-
 
 const elDis = [elGroup, startButton, ekspo, Api, buster, captcha, busterKey, cghost, country]
 
