@@ -21,7 +21,7 @@ async function init(logToTextarea, logToTable, data) {
         RecaptchaPlugin({
             provider: {
                 id: '2captcha',
-                token: apiKeyValue
+                token: data.api2captcha
             },
             visualFeedback: true
         })
@@ -81,7 +81,7 @@ async function init(logToTextarea, logToTable, data) {
                 }
             }
 
-            const search = await page.waitForSelector('[name="q"]', {
+            const search = await page.waitForSelector('textarea[name="q"]', {
                 timeout: 120000
             })
 
@@ -93,7 +93,6 @@ async function init(logToTextarea, logToTable, data) {
                     await bahasa.click();
                     await page.waitForSelector('li[aria-label="‪English‬"]');
                     await page.click('li[aria-label="‪English‬"]');
-                    logToTextarea('tes dsdsd')
                     await page.sleep(6000)
                     const aklans = await page.$('#L2AGLb');
                     await aklans.click()
@@ -104,11 +103,21 @@ async function init(logToTextarea, logToTable, data) {
                 await subject.type('site:' + recepientName)
                 logToTextarea('Url : ' + recepientName);
 
-                await page.keyboard.press('Enter')
-                await page.waitForNavigation({
-                    waitUntil: ['domcontentloaded', "networkidle2"],
-                    timeout: 120000
-                })
+                await page.sleep(2000)
+    
+                const btnSearch = await page.$$('[name="btnK"]')
+                if (btnSearch.length > 0) {
+                    await btnSearch[1].click()
+                } else {
+                    await page.keyboard.press('Enter')
+                }
+
+                await Promise.all([
+                    await page.waitForNavigation({
+                        waitUntil: ['domcontentloaded', "networkidle2"],
+                        timeout: 120000
+                    })
+                ])
             }
 
             if (data.captcha) {
@@ -144,15 +153,13 @@ async function init(logToTextarea, logToTable, data) {
                 hasil = data
             }
 
-            await page.waitForSelector('[jsname="pkjasb"]', {
-                waitUntil: 'domcontentloaded',
-                timeout: 60000
-            });
-
+            await page.sleep(3000)
+            await page.waitForSelector('[name="q"]')
+            await page.$eval('[name="q"]', (textarea) => {
+                textarea.value = ''
+            })
             await page.sleep(1000)
 
-            const silang = await page.$('[jsname="pkjasb"]')
-            silang && await silang.click()
         } catch (error) {
             hasil = "FAILED ❌"
             logToTextarea(error);
