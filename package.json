@@ -49,7 +49,7 @@
     "copyright": "Copyrights 2024 Alsav System",
     "publish": {
       "provider": "github",
-      "owner": "SattyaP",
+      "owner": "alsavdev",
       "repo": "indexChecker",
       "private": true
     },
