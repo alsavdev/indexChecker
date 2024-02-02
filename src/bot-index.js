@@ -248,18 +248,41 @@ async function init(logToTextarea, logToTable, data) {
             const pickCountry = await page.waitForSelector('.selected-country')
             pickCountry && await pickCountry.click()
 
-            await page.sleep(3000)
+            await page.sleep(5000)
 
-            const regionFiles = fs.readFileSync(data.country, 'utf-8').split('\n').filter(line => line !== "")
-            
-            const country = await page.$$('mat-option > .mat-option-text')
-            await country[Math.floor(Math.random() * regionFiles.length)].click()
+            const dropBox = await page.waitForSelector('mat-option > .mat-option-text');
 
-            await page.sleep(3000)
+            if (dropBox) {
+                const regionFiles = fs.readFileSync(data.country, 'utf-8').split('\n').filter(line => line !== "");
+                const random = regionFiles[Math.floor(Math.random() * regionFiles.length)].toLowerCase();
 
-            await page.evaluate(() => {
-                document.querySelector('body > app-root > main > app-home > div > div.spinner > app-switch > div').click()
-            })
+                logToTextarea(`[INFO] Country Choosen ${random}`);
+
+                await page.waitForSelector('mat-option > .mat-option-text');
+
+                const choice = await page.evaluate(() => {
+                    const elements = document.querySelectorAll('mat-option > .mat-option-text');
+                    let data = [];
+                    for (let i = 0; i < elements.length; i++) {
+                        data[i] = elements[i].innerText.toLowerCase().trim();
+                    }
+                    return data;
+                });
+
+                for (let i = 0; i < choice.length; i++) {
+                    if (choice[i] == random.trim()) {
+                        const country = await page.$$('mat-option > .mat-option-text');
+                        await country[i].click();
+                        break;
+                    }
+                }
+
+                await page.sleep(3000)
+
+                await page.evaluate(() => {
+                    document.querySelector('body > app-root > main > app-home > div > div.spinner > app-switch > div').click()
+                })
+            }
 
             await page.sleep(5000)
         } catch (error) {
@@ -365,7 +388,7 @@ async function init(logToTextarea, logToTable, data) {
     }
 
     await open()
-    await workFlow().catch((error) => logToTextarea(error))
+    await workFlow().catch(async (error) => { logToTextarea(error); await browser.close()})
 }
 
 const stopProccess = (logToTextarea) => {
