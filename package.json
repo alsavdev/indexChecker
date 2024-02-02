@@ -1,6 +1,6 @@
 {
-  "name": "checker-index",
-  "productName": "Checker Index",
+  "name": "alsav-checker-index",
+  "productName": "Alsav Checker Index",
   "version": "1.0.1",
   "description": "Using for check index",
   "main": "src/index.js",
@@ -43,8 +43,8 @@
     "url": "https://github.com/alsavdev/indexChecker"
   },
   "build": {
-    "appId": "Alsav Checker",
-    "productName": "Alsav Checker",
+    "appId": "Alsav Index Checker",
+    "productName": "Alsav Index Checker",
     "compression": "maximum",
     "copyright": "Copyrights 2024 Alsav System",
     "publish": {
