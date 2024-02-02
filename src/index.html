@@ -10,8 +10,24 @@
 </head>
 
 <body class="card-all">
+
+    <div id="warp" class="overlay mx-auto px-lg-4 px-md-4 px-sm-4 hidden">
+        <div class="col-lg-4 col-md-6 col-sm-6" id="notification">
+            <p id="message" class="mb-2">Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui, necessitatibus.</p>
+            <div id="warp-loader" class="mb-2 hidden">
+                <div class="progress bg-secondary rounded overflow-hidden">
+                    <div id="download-progress" class="progress-bar bg-primary" role="progressbar" style="width: 0%"
+                        aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+            <button id="restart-button" type="button" class="d-none btn btn-primary">
+                Restart
+            </button>
+        </div>
+    </div>
+
     <div style="background-color: #ffff;" class="sticky-top py-2 align-items-center mb-4 app">
-        <h4 class=" fw-bold mt-2 text-center">Checker Index 1.1</h4>
+        <h4 class=" fw-bold mt-2 text-center">Checker Index <span id="version"></span></h4>
     </div>
     <div class="container px-4 mb-5">
         <div class="">
@@ -39,8 +55,9 @@
 
                     <textarea class="form-control mb-3 d-none" id="apikey" rows="1"
                         placeholder="apikey captcha < provider >"></textarea>
-                    
-                    <input type="text" class="form-control mb-3 d-none" value="YXXP7NHK3HBMWCGU22RJOED3L2XPX3X6" id="busterKey" placeholder="apikey wit.ai">
+
+                    <input type="text" class="form-control mb-3 d-none" value="YXXP7NHK3HBMWCGU22RJOED3L2XPX3X6"
+                        id="busterKey" placeholder="apikey wit.ai">
 
                     <h5 class="fs-6 fw-medium text-white mb-2">Vpn Service :</h5>
                     <div class="form-check form-switch mb-3">
@@ -48,7 +65,8 @@
                         <label class="form-check-label text-white" for="cghost">CyberGhost</label>
                     </div>
 
-                    <label for="country" id="country_label" class="text-white d-none form-label fw-medium">Country File</label>
+                    <label for="country" id="country_label" class="text-white d-none form-label fw-medium">Country
+                        File</label>
                     <input class="form-control d-none form mb-3" type="file" id="country" accept=".txt">
 
                     <h5 class="fs-6 fw-medium text-white mb-2">Options :</h5>
@@ -85,7 +103,7 @@
                                     <th class="text-center" scope="col">Index</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="table-data">
 
                             </tbody>
                         </table>

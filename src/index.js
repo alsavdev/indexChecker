@@ -9,6 +9,9 @@ const {
     init,
     stopProccess
 } = require("./bot-index.js")
+const {
+    autoUpdater
+} = require('electron-updater');
 const path = require('path');
 const fs = require('fs');
 
@@ -32,6 +35,20 @@ function createWindow() {
     });
     mainWindow.loadFile('src/index.html');
     app.isPackaged && Menu.setApplicationMenu(null);
+
+    autoUpdater.on('download-progress', (progress) => {
+        mainWindow.webContents.send('update_progress', progress.percent);
+    });
+
+    autoUpdater.checkForUpdatesAndNotify();
+    autoUpdater.on('update-available', () => {
+        updateCheckInProgress = false;
+        mainWindow.webContents.send('update_available');
+    });
+
+    autoUpdater.on('update-downloaded', () => {
+        mainWindow.webContents.send('update_downloaded');
+    });
 }
 
 app.whenReady().then(createWindow);
@@ -95,9 +112,10 @@ ipcMain.on('stop', (event) => {
 
 ipcMain.on('save-excel-data', (event, data) => {
     const options = {
-        title: 'Save an Excel',
+        title: 'Save the data',
+        defaultPath: `data-index-checker.xlsx`,
         filters: [{
-            name: 'Excel',
+            name: '.xlsx',
             extensions: ['xlsx']
         }]
     };
@@ -122,4 +140,14 @@ ipcMain.on('save-excel-data', (event, data) => {
     }).catch(err => {
         console.error(err);
     });
+});
+
+ipcMain.on('app_version', (event) => {
+    event.sender.send('app_version', {
+        version: app.getVersion()
+    });
+});
+
+ipcMain.on('restart_app', () => {
+    autoUpdater.quitAndInstall();
 });

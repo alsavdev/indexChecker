@@ -8,6 +8,7 @@ const startButton = document.getElementById('Start');
 const stopButton = document.getElementById('stop');
 const ekspo = document.getElementById("export");
 const logTable = document.getElementById('data-table');
+const table = document.getElementById('table-data');
 const Api = document.getElementById('apikey')
 const busterKey = document.getElementById('busterKey')
 const inputFields = [elGroup];
@@ -19,12 +20,13 @@ const captcha = document.getElementById('captcha')
 const cghost = document.getElementById('cghost')
 const country = document.getElementById('country')
 const countryLabel = document.getElementById('country_label')
+const version = document.getElementById('version')
+const warp = document.getElementById('warp');
+const message = document.getElementById('message');
+const restartButton = document.getElementById('restart-button');
+const loaderDownload = document.getElementById('warp-loader')
 
 let previousReportData = [];
-
-ekspo.addEventListener('click', () => {
-  const data = []
-})
 
 buster.addEventListener('change', () => {
   if (buster.checked) {
@@ -68,11 +70,19 @@ startButton.addEventListener('click', () => {
       country: country.files[0]?.path,
     }
 
+    clearLogTable()
     previousReportData = [];
     initNumb = 0;
     ipcRenderer.send('start', data)
   }
 });
+
+function clearLogTable() {
+  const rowCount = table.rows.length;
+  for (let i = rowCount - 1; i >= 0; i--) {
+    table.deleteRow(i);
+  }
+}
 
 function validateForm(fields) {
   let isValid = true;
@@ -91,9 +101,9 @@ function validateForm(fields) {
 
 stopButton.addEventListener('click', () => {
   if (confirm("Realy want to stop the proccess ?") == true) {
-      ipcRenderer.send('stop');
-      startButton.classList.remove('d-none')
-      stopButton.classList.add('d-none')
+    ipcRenderer.send('stop');
+    startButton.classList.remove('d-none')
+    stopButton.classList.add('d-none')
   }
 })
 
@@ -116,7 +126,7 @@ document.getElementById('refreshButton').addEventListener('click', () => {
   ipcRenderer.send('refreshWindow');
 });
 
-document.getElementById('export').addEventListener('click', function () {
+ekspo.addEventListener('click', function () {
   const table = document.getElementById('data-table');
   const wb = XLSX.utils.table_to_book(table);
   if (!wb['Sheets']['Sheet1']['!cols']) {
@@ -125,10 +135,10 @@ document.getElementById('export').addEventListener('click', function () {
   wb['Sheets']['Sheet1']['!cols'][0] = {
     width: 5
   };
-  wb['Sheets']['Sheet1']['!cols'][0] = {
-    width: 40
-  };
   wb['Sheets']['Sheet1']['!cols'][1] = {
+    width: 60
+  };
+  wb['Sheets']['Sheet1']['!cols'][2] = {
     width: 12
   };
 
@@ -140,8 +150,6 @@ document.getElementById('export').addEventListener('click', function () {
   ipcRenderer.send('save-excel-data', data);
 });
 
-
-
 let initNumb = 0
 
 function logToTable(search, hasil) {
@@ -150,7 +158,7 @@ function logToTable(search, hasil) {
 
     if (!isDuplicate) {
       initNumb++;
-      const newRow = logTable.insertRow();
+      const newRow = table.insertRow();
       const rowHtml = `<tr><td>${initNumb}</td><td>${search}</td><td class="text-center">${hasil}</td></tr>`;
       newRow.innerHTML = rowHtml;
       document.getElementById('scrl').scrollTop = document.getElementById('scrl').scrollHeight;
@@ -162,6 +170,7 @@ function logToTable(search, hasil) {
     }
   }
 }
+
 ipcRenderer.on('logToTable', (event, report) => {
   for (const log of report) {
     logToTable(log.search, log.hasil);
@@ -177,6 +186,7 @@ ipcRenderer.on("disabled", () => {
     startButton.classList.add('d-none')
     stopButton.classList.remove('d-none')
   })
+  ekspo.classList.add("hidden")
 })
 
 ipcRenderer.on("enabled", () => {
@@ -187,4 +197,36 @@ ipcRenderer.on("enabled", () => {
     startButton.classList.remove('d-none')
     stopButton.classList.add('d-none')
   })
+})
+
+ipcRenderer.send('app_version');
+ipcRenderer.on('app_version', (event, arg) => {
+  version.innerText = 'v' + arg.version;
+});
+
+ipcRenderer.on('update_available', () => {
+  ipcRenderer.removeAllListeners('update_available');
+  message.innerText = 'A new update is available. Downloading now...';
+  warp.classList.remove('hidden');
+  loaderDownload.classList.remove('hidden');
+});
+
+ipcRenderer.on('update_progress', (event, progress) => {
+  updateProgress = progress;
+  const progsDown = document.getElementById('download-progress')
+  progsDown.style.width = updateProgress + '%'
+  progsDown.setAttribute('aria-valuenow', updateProgress)
+});
+
+ipcRenderer.on('update_downloaded', () => {
+  ipcRenderer.removeAllListeners('update_downloaded');
+  message.innerText = 'Update Downloaded. It will be installed on restart. Restart now?';
+  restartButton.classList.remove('d-none');
+  warp.classList.remove('hidden');
+
+  loaderDownload.classList.add('hidden');
+});
+
+restartButton.addEventListener("click", (e) => {
+  ipcRenderer.send('restart_app');
 })
