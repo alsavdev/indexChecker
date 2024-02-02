@@ -1,7 +1,7 @@
 {
   "name": "alsav-checker-index",
   "productName": "Alsav Checker Index",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Using for check index",
   "main": "src/index.js",
   "scripts": {
