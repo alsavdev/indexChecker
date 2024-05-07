@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../styles/auth.css">
+</head>
+<body>
+    
+    <div class="container px-4 py-3 w-100">
+        <label class="">License Key</label>
+        <input value="085EAED6-EEC5-4EAA-ACCB-F16BC48AC58C" class="form-control" type="text" autofocus placeholder="please input license-key...">
+        <span style="font-size: 14px;" id="msg-error" class="text-danger"></span>
+        <button type="button" class="w-100 btn btn-primary mt-3">Submit</button>
+        <button class="btn btn-primary mt-3 w-100 d-none" type="button" disabled>
+            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+            <span role="status">Loading...</span>
+          </button>
+    </div>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <script src="../../node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
+    <script src="../../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/03734f8551.js" crossorigin="anonymous"></script>
+    <script src="../auth/handler.js"></script>
+</body>
+</html>
