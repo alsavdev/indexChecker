@@ -14,12 +14,11 @@ const {
 } = require("electron-updater");
 const path = require("path");
 const fs = require("fs");
-// const { mac } = require('getmac');
-const mac  = require('getmac')
+const mac = require("getmac");
 
-const authWindowSize = [500, 210]
+const authWindowSize = [500, 210];
 let mainWindow, authWindow;
-const productName = "Alsav Index Checker"
+const productName = "Alsav Index Checker";
 
 function createWindow() {
     mainWindow = new BrowserWindow({
@@ -172,15 +171,56 @@ ipcMain.on("app_version", (event) => {
     });
 });
 
-ipcMain.on('get-personal-data', (event, args) => {
-  event.reply('get-personal-data', {mac : mac.isMAC(mac.default()) ? mac.default() : null, app_id : app.getName()});
-})
+ipcMain.on("get-personal-data", (event, args) => {
+    event.reply("get-personal-data", {
+        mac: mac.isMAC(mac.default()) ? mac.default() : null,
+        app_id: app.getName(),
+        version: app.getVersion(),
+    });
+});
 
 ipcMain.on("restart_app", () => {
     autoUpdater.quitAndInstall();
 });
 
-ipcMain.on('license-valid', () => {
+ipcMain.on("license-valid", async (event) => {
     authWindow.close();
     createWindow();
+});
+
+function stateUpdate(event, state, value = null) {
+    event.sender.send("checking-for-updates", state, value);
+}
+
+ipcMain.on('check-for-updates', async (event) => {
+    stateUpdate(event, true)
+    const response = await checkForUpdates();
+    if (response.status === 'warning' && response.point === "need update" || response.status === 'error' || response.status === 'failed') {
+        return stateUpdate(event, false, response)
+    }
+
+    stateUpdate(event, false)
 })
+
+async function checkForUpdates() {
+    return new Promise(async (resolve, reject) => {
+        await fetch(`http://127.0.0.1:3000/api/v1/check-version`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + process.env.API_KEY,
+                },
+                body: JSON.stringify({
+                    app_id: app.getName(),
+                    version: app.getVersion(),
+                }),
+            })
+            .then((res) => res.json())
+            .then((data) => {
+                resolve(data);
+            })
+            .catch((err) => reject(err));
+    });
+}
+
+

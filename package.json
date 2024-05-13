@@ -4,7 +4,6 @@
   "description": "Using for check index",
   "main": "src/index.js",
   "scripts": {
-    "dev": "cross-env API_KEY=eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTcxNDQ2MjcwNiwiaWF0IjoxNzE0NDYyNzA2fQ.hlxQJDxsT96JgX5A3Hdh6lnfNHT3dX3wdnGRy3Qmum8 UPDATER=false nodemon electron .",
     "start": "cross-env API_KEY=eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTcxNDQ2MjcwNiwiaWF0IjoxNzE0NDYyNzA2fQ.hlxQJDxsT96JgX5A3Hdh6lnfNHT3dX3wdnGRy3Qmum8 UPDATER=false electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",

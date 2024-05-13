@@ -1,6 +1,6 @@
 const { sendEvent } = require("../interface/electron");
-const LicenseService = require("../services/validateLicense");
-const service = new LicenseService();
+const ApiService = require("../services/ApiService");
+const service = new ApiService();
 
 document.addEventListener('DOMContentLoaded', () => {
     const input = document.querySelector('input');
