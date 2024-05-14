@@ -253,9 +253,19 @@ ipcRenderer.on("checking-for-updates", (event, args, response) => {
     link_update.href = response.link;
   } else if ((response != null) && response.status === "failed") {
     message.innerText = response.message;
+    message.classList.add('text-danger')
     warp.classList.remove("hidden");
     spinner.classList.add("hidden");
-    // display btn back to auth ( license validate pages )
+
+    const btnClose = document.createElement("button");
+    btnClose.setAttribute("type", "button");
+    btnClose.classList.add("btn", "btn-secondary");
+    btnClose.innerText = "Close";
+    btnClose.addEventListener("click", () => {
+      ipcRenderer.send("close-auth");
+    });
+
+    document.getElementById('notification').appendChild(btnClose);
   } else if ((response != null) && response.status === "error") {
     message.innerHTML = response.message;
     warp.classList.remove("hidden");

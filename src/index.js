@@ -3,7 +3,8 @@ const {
     BrowserWindow,
     ipcMain,
     dialog,
-    Menu
+    Menu,
+    shell,
 } = require("electron");
 const {
     init,
@@ -55,6 +56,13 @@ function createWindow() {
             mainWindow.webContents.send("update_downloaded");
         });
     }
+
+    mainWindow.webContents.setWindowOpenHandler((edata) => {
+        shell.openExternal(edata.url);
+        return {
+            action: 'deny'
+        };
+    });
 }
 
 function createAuthWindow() {
@@ -192,15 +200,19 @@ function stateUpdate(event, state, value = null) {
     event.sender.send("checking-for-updates", state, value);
 }
 
-ipcMain.on('check-for-updates', async (event) => {
-    stateUpdate(event, true)
+ipcMain.on("check-for-updates", async (event) => {
+    stateUpdate(event, true);
     const response = await checkForUpdates();
-    if (response.status === 'warning' && response.point === "need update" || response.status === 'error' || response.status === 'failed') {
-        return stateUpdate(event, false, response)
+    if (
+        (response.status === "warning" && response.point === "need update") ||
+        response.status === "error" ||
+        response.status === "failed"
+    ) {
+        return stateUpdate(event, false, response);
     }
 
-    stateUpdate(event, false)
-})
+    stateUpdate(event, false);
+});
 
 async function checkForUpdates() {
     return new Promise(async (resolve, reject) => {
@@ -223,4 +235,9 @@ async function checkForUpdates() {
     });
 }
 
+function appExit() {
+    app.relaunch();
+    app.exit();
+}
 
+ipcMain.on("close-auth", () => appExit());

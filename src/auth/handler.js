@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 stateButton(false)
             }
         }).catch(err => {
-            msg.innerHTML = err.message
+            msg.innerHTML = err.message.includes('Failed to fetch') ? 'Something error please report to us, <a style="cursor:pointer;" href="mailto: support@alsavdev.com">support@alsavdev.com</a>' : err.message
             stateButton(false)
         })
     })
