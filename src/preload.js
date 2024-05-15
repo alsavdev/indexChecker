@@ -1,11 +1,18 @@
 const { ipcRenderer } = require("electron");
+const path = require("path");
 const XLSX = require("xlsx");
+
+const relativePath = (p) => path.resolve(__dirname.replace("pages", ""), p);
+const { sendEvent } = require(relativePath("./utils/electron"));
+const { resolveFiles } = require(relativePath("./utils/tools"));
+
+require(relativePath('./utils/update'))
+
 const logTextarea = document.getElementById("log");
 const elGroup = document.getElementById("fileGroup");
 const startButton = document.getElementById("Start");
 const stopButton = document.getElementById("stop");
 const ekspo = document.getElementById("export");
-const logTable = document.getElementById("data-table");
 const table = document.getElementById("table-data");
 const Api = document.getElementById("apikey");
 const busterKey = document.getElementById("busterKey");
@@ -60,20 +67,20 @@ cghost.addEventListener("change", () => {
 startButton.addEventListener("click", () => {
   if (validateForm(inputFields)) {
     const data = {
-      fileGroup: elGroup.files[0]?.path,
+      fileGroup: resolveFiles(elGroup),
       visible: headles.checked ? false : "new",
       api2captcha: Api.value,
       busterKey: busterKey.value,
       buster: buster.checked,
       captcha: captcha.checked,
       cghost: cghost.checked,
-      country: country.files[0]?.path,
+      country: resolveFiles(country),
     };
 
     clearLogTable();
     previousReportData = [];
     initNumb = 0;
-    ipcRenderer.send("start", data);
+    sendEvent("start", data);
   }
 });
 
@@ -190,21 +197,15 @@ const elDis = [
 ipcRenderer.on("disabled", () => {
   elDis.forEach((e) => {
     e.setAttribute("disabled", "");
-    startButton.style.backgroundColor = "#808080";
-    startButton.classList.add("d-none");
-    stopButton.classList.remove("d-none");
   });
-  ekspo.classList.add("hidden");
+  buttonStart(true)
 });
 
 ipcRenderer.on("enabled", () => {
   elDis.forEach((e) => {
     e.removeAttribute("disabled", "");
-    startButton.style.backgroundColor = "#0f0129";
-    ekspo.classList.remove("hidden");
-    startButton.classList.remove("d-none");
-    stopButton.classList.add("d-none");
   });
+  buttonStart()
 });
 
 ipcRenderer.send("app_version");
@@ -212,66 +213,23 @@ ipcRenderer.on("app_version", (event, arg) => {
   version.innerText = "v" + arg.version;
 });
 
-ipcRenderer.on("update_available", () => {
-  ipcRenderer.removeAllListeners("update_available");
-  message.innerText = "A new update is available. Downloading now...";
-  warp.classList.remove("hidden");
-  loaderDownload.classList.remove("hidden");
-});
 
-ipcRenderer.on("update_progress", (event, progress) => {
-  updateProgress = progress;
-  const progsDown = document.getElementById("download-progress");
-  progsDown.style.width = updateProgress + "%";
-  progsDown.setAttribute("aria-valuenow", updateProgress);
-});
+const handleClass = (el, isAdd = false, className) => {
+  isAdd ? el.classList.add(className) : el.classList.remove(className);
+}
 
-ipcRenderer.on("update_downloaded", () => {
-  ipcRenderer.removeAllListeners("update_downloaded");
-  message.innerText =
-    "Update Downloaded. It will be installed on restart. Restart now?";
-  restartButton.classList.remove("d-none");
-  warp.classList.remove("hidden");
-
-  loaderDownload.classList.add("hidden");
-});
-
-restartButton.addEventListener("click", (e) => {
-  ipcRenderer.send("restart_app");
-});
-
-ipcRenderer.send("check-for-updates");
-ipcRenderer.on("checking-for-updates", (event, args, response) => {
-  if (args && response == null) {
-    message.innerText = "Please wait, checking for updates...";
-    warp.classList.remove("hidden");
-  } else if ((response != null) && response.status === "warning" && response.point === "need update") {
-    message.innerText = response.message;
-    warp.classList.remove("hidden");
-    spinner.classList.add("hidden");
-    link_update.classList.remove("d-none");
-    link_update.href = response.link;
-  } else if ((response != null) && response.status === "failed") {
-    message.innerText = response.message;
-    message.classList.add('text-danger')
-    warp.classList.remove("hidden");
-    spinner.classList.add("hidden");
-
-    const btnClose = document.createElement("button");
-    btnClose.setAttribute("type", "button");
-    btnClose.classList.add("btn", "btn-secondary");
-    btnClose.innerText = "Close";
-    btnClose.addEventListener("click", () => {
-      ipcRenderer.send("close-auth");
+function buttonStart(isDisabled = false) {
+  if (isDisabled) {
+    startButton.style.backgroundColor = "#808080";
+    [startButton, ekspo].forEach((e) => {
+      handleClass(e, true, 'hidden')
     });
-
-    document.getElementById('notification').appendChild(btnClose);
-  } else if ((response != null) && response.status === "error") {
-    message.innerHTML = response.message;
-    warp.classList.remove("hidden");
-    spinner.classList.add("hidden");
+    handleClass(stopButton, false, 'hidden')
   } else {
-    warp.classList.add("hidden");
-    loaderDownload.classList.add("hidden");
+    startButton.style.backgroundColor = "#0f0129";
+    [startButton, ekspo].forEach((e) => {
+      handleClass(e, false, 'hidden')
+    });
+    handleClass(stopButton, true, 'hidden')
   }
-});
+}
