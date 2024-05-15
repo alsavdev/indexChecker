@@ -133,6 +133,10 @@ async function init(logToTextarea, logToTable, data) {
                 }
             }
 
+            await page.sleep(3000)
+            const tools = await page.waitForSelector('[aria-controls="hdtbMenus"]')
+            await tools.evaluate((el) => el.click());
+            
             try {
                 await page.waitForSelector('#result-stats', {
                     waitUntil: 'domcontentloaded',
