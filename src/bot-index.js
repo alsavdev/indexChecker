@@ -369,6 +369,7 @@ async function init(logToTextarea, logToTable, data) {
             for (let i = 0; i < recipients.length; i++) {
 
                 if (finish) {
+                    finish = false
                     await browser.close();
                     break;
                 }
@@ -385,6 +386,7 @@ async function init(logToTextarea, logToTable, data) {
                 logToTable(recipientName, hasil)
 
                 if (finish) {
+                    finish = false
                     logToTextarea("[INFO] Stop Success");
                     await browser.close();
                     break;
